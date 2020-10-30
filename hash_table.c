@@ -63,14 +63,20 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
         }
     }
 }
-// ITERATIVE
+/// @brief checks if current entry has matching or a larger key then the input key,
+///        iteratively searches the list for until criteria is met or end of list
+/// @param prev_entry previous entry to the one currently being investigated
+/// @param key input key to insert
+/// @param entry current entry thats investigated, checking if it matches or is larger than
+///              param key
 entry_t *find_previous_entry_for_key(entry_t *prev_entry, entry_t *entry, int key)
 {
-    if (entry->key >= key)
+    if (entry == NULL || entry->key >= key)
     {
         return prev_entry;
     }
-    find_previous_entry_for_key(entry, entry->next, key);
+
+    return find_previous_entry_for_key(entry, entry->next, key);
 }
 
 entry_t *entry_create(int key, char *value, entry_t *next)
