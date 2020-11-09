@@ -15,6 +15,10 @@ struct hash_table
     entry_t *buckets[17];
 };
 
+void remove_bucket(ioopm_hash_table_t *ht, entry_t *entry);
+entry_t *find_previous_entry_for_key(entry_t *prev_entry, entry_t *entry, int key);
+entry_t *entry_create(int key, char *value, entry_t *next);
+
 /// @brief Create a new hash table
 /// @return A new empty hash table
 ioopm_hash_table_t *ioopm_hash_table_create()
@@ -57,11 +61,11 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
         // IF FRONT THEN DON'T POINT TO ENTRY THAT DOESN'T EXIST, INSTEAD JUST CREATE ENTRY
         if (entry == ht->buckets[bucket])
         {
-            create_entry(key, value, next);
+            entry_create(key, value, next);
         }
         else
         {
-            entry->next = create_entry(key, value, next);
+            entry->next = entry_create(key, value, next);
         }
     }
 }
@@ -114,7 +118,7 @@ void *ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
 
     if (prev_entry == entry_front && prev_entry->key == key)
     {
-        return prev_entry->key;
+        return prev_entry->value;
     }
 
     if (prev_entry->next->key == key)
@@ -216,6 +220,7 @@ int *ioopm_hash_table_keys(ioopm_hash_table_t *h)
         }
         fprintf(stdout, "\n"); 
     }
+    return NULL;
 }
 
 /// @brief return the values for all entries in a hash map (in no particular order, but same as ioopm_hash_table_keys)
@@ -233,8 +238,9 @@ char **ioopm_hash_table_values(ioopm_hash_table_t *h)
             fprintf(stdout, "%s ", entry->value);
             entry = entry->next;
         }
-        fprintf(stdout, "\n");
     }
+    return NULL;
+
 }
 
 /// @brief check if a hash table has an entry with a given key
@@ -261,7 +267,7 @@ bool ioopm_hash_table_has_value(ioopm_hash_table_t *h, char *value)
 
         while (entry != NULL)
         {
-            if (entry->value = value)
+            if (entry->value == value)
             {
                 return true;
             }
