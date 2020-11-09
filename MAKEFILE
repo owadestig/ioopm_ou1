@@ -1,5 +1,13 @@
+PROG    =       main
+SRCS    =       hash_table.c    \
+                main.c
+OBJS    =       $(SRCS:.c=.o)
+DEPS    =       hash_table.h
 CC      =       gcc
-CFLAGS  =       -g -std=gnu11 -Wall
+CFLAGS  =       -g -std=gnu11 -Wall -I
 
-main: main.o hash_table.o
-     $(CC) $(CFLAGS) -o main main.o hash_table.o
+$(PROG) : $(SRCS) $(DEPS)
+        $(CC) $(CFLAGS) -o $(PROG) $(SRCS)
+
+clean :
+        /bin/rm -f $(OBJS) $(PROG)
