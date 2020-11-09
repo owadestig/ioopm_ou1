@@ -9,7 +9,7 @@ $(PROG) : $(MAIN) $(LIST)
 
 $(MAIN) : main.c
 
-$(HASH_TABLE) : hash_table.h
+$(HASH_TABLE) : hash_table.c
 
 clean :
         /bin/rm -f $(OBJS) $(PROG)
