@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool. h> 
+#include <stdbool.h> 
 
 
 typedef struct entry entry_t;
 typedef struct hash_table ioopm_hash_table_t;
+typedef bool(*ioopm_apply_function)(int key, char *value, void *extra);
 
 /**
  * @file hash_table.h

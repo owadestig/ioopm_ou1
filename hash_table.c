@@ -32,7 +32,9 @@ ioopm_hash_table_t *ioopm_hash_table_create()
 /// @brief Delete a hash table and free its memory
 /// param ht a hash table to be deleted
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
-{
+{   
+    free(ht->buckets);
+    free(ht);
 }
 
 /// @brief add key => value entry in hash table ht
@@ -102,7 +104,7 @@ entry_t *entry_create(int key, char *value, entry_t *next)
 void *ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
 {
     int bucket = key % 17;
-    entry_t entry_front = ht->buckets[bucket];
+    entry_t *entry_front = ht->buckets[bucket];
     entry_t *prev_entry = find_previous_entry_for_key(entry_front, entry_front, key);
 
     if (prev_entry->next == NULL)
@@ -186,7 +188,7 @@ void ioopm_hash_table_clear(ioopm_hash_table_t *h)
     }
 }
 
-void remove_bucket(ioopm_hash_table_t ht, entry_t entry)
+void remove_bucket(ioopm_hash_table_t *ht, entry_t *entry)
 {
     if (entry->next == NULL)
     {
@@ -212,7 +214,7 @@ int *ioopm_hash_table_keys(ioopm_hash_table_t *h)
             fprintf(stdout, "%d ", entry->key);
             entry = entry->next;
         }
-        fprintf(stdout, "\n");
+        fprintf(stdout, "\n"); 
     }
 }
 
@@ -255,7 +257,7 @@ bool ioopm_hash_table_has_value(ioopm_hash_table_t *h, char *value)
 {
     for (int i = 0; i < 17; i++)
     {
-        entry_t entry = h->bucket[i];
+        entry_t *entry = h->buckets[i];
 
         while (entry != NULL)
         {
