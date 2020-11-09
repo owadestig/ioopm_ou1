@@ -1,6 +1,7 @@
 PROG    =       main
 SRCS    = hash_table.c    \
           main.c
+          hash_table.h
 OBJS    = $(SRCS:.c=.o)
 CC      =       gcc
 CFLAGS  =       -g -std=gnu11 -Wall
