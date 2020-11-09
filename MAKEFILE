@@ -1,16 +1,13 @@
-CC      = gcc
-CFLAGS  = -g -std=gnu11 -Wall
-HEADERS = hash_table.h
-OBJECTS = main.c hash_table.c
+PROG    =       main
+SRCS    =       hash_table.c    \
+                main.c
+OBJS    =       $(SRCS:.c=.o)
+DEPS    =       hash_table.h
+CC      =       gcc
+CFLAGS  =       -g -std=gnu11 -Wall
 
-default: program
+$(PROG) : $(SRCS) $(DEPS)
+        $(CC) $(CFLAGS) -o $(PROG) $(SRCS)
 
-%.o: %.c $(HEADERS)
-    $(CC) $(CFLAGS) -c $< -o $@
-
-program: $(OBJECTS)
-    $(CC) $(CFLAGS) $(OBJECTS) -o $@
-
-clean:
-    -rm -f $(OBJECTS)
-    -rm -f program
+clean :
+        /bin/rm -f $(OBJS) $(PROG)
