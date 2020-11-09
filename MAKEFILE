@@ -1,6 +1,6 @@
 PROG    =       main
 MAIN   =       main.o
-HASH_TABLE =  hash_table.o
+HASH_TABLE =    hash_table.o
 CC      =       gcc
 CFLAGS  =       -g -std=gnu11 -Wall
 
