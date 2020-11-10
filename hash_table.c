@@ -51,7 +51,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
 
     entry_t *entry = find_previous_entry_for_key(ht->buckets[bucket], ht->buckets[bucket], key);
 
-    if (entry != NULL && entry->next != NULL && entry->next->key == key)
+    if (entry != NULL && entry->next->key == key)
     {
         entry->next->value = value;
     }
@@ -60,7 +60,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
         // IF FRONT THEN DON'T POINT TO ENTRY THAT DOESN'T EXIST, INSTEAD JUST CREATE ENTRY
         if (entry == ht->buckets[bucket])
         {
-            entry_create(key, value, entry->next);
+            entry_create(key, value, NULL);
         }
         else
         {
