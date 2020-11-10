@@ -36,7 +36,7 @@ ioopm_hash_table_t *ioopm_hash_table_create()
 /// @brief Delete a hash table and free its memory
 /// param ht a hash table to be deleted
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
-{   
+{
     free(ht->buckets);
     free(ht);
 }
@@ -50,22 +50,21 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
     int bucket = key % 17;
 
     entry_t *entry = find_previous_entry_for_key(ht->buckets[bucket], ht->buckets[bucket], key);
-    entry_t *next = entry->next;
 
-    if (entry != NULL && next->key == key)
+    if (entry != NULL && entry->next != NULL && entry->next->key == key)
     {
-        next->value = value;
+        entry->next->value = value;
     }
     else
     {
         // IF FRONT THEN DON'T POINT TO ENTRY THAT DOESN'T EXIST, INSTEAD JUST CREATE ENTRY
         if (entry == ht->buckets[bucket])
         {
-            entry_create(key, value, next);
+            entry_create(key, value, entry->next);
         }
         else
         {
-            entry->next = entry_create(key, value, next);
+            entry->next = entry_create(key, value, entry->next);
         }
     }
 }
@@ -218,7 +217,7 @@ int *ioopm_hash_table_keys(ioopm_hash_table_t *h)
             fprintf(stdout, "%d ", entry->key);
             entry = entry->next;
         }
-        fprintf(stdout, "\n"); 
+        fprintf(stdout, "\n");
     }
     return NULL;
 }
@@ -240,7 +239,6 @@ char **ioopm_hash_table_values(ioopm_hash_table_t *h)
         }
     }
     return NULL;
-
 }
 
 /// @brief check if a hash table has an entry with a given key
