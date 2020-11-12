@@ -37,7 +37,13 @@ ioopm_hash_table_t *ioopm_hash_table_create()
 /// param ht a hash table to be deleted
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
 {
-    free(ht->buckets);
+    for (int i = 0; i < 17; i++)
+    {
+        while (ht->buckets[i] != NULL)
+        {
+            ioopm_hash_table_remove(ht, ht->buckets[i]->key);
+        }
+    }
     free(ht);
 }
 
