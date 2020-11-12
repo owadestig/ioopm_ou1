@@ -19,6 +19,7 @@ struct hash_table
 
 static entry_t *find_previous_entry_for_key(entry_t *prev_entry, entry_t *entry, int key);
 static entry_t *entry_create(int key, char *value, entry_t *next);
+static void remove_bucket(ioopm_hash_table_t *ht, entry_t *entry);
 
 /// @brief Create a new hash table
 /// @return A new empty hash table
@@ -40,10 +41,11 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
 {
     for (int i = 0; i < No_Buckets; i++)
     {
-        while (ht->buckets[i] != NULL)
+        /*while (ht->buckets[i] != NULL)
         {
             ioopm_hash_table_remove(ht, ht->buckets[i]->key);
-        }
+        }*/
+        remove_bucket(ht,ht->buckets[i]);
     }
     free(ht);
 }
