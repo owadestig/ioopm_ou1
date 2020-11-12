@@ -1,15 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
+#include <stdbool.h> 
 
-typedef struct entry {
-    int key;       // holds the key
-    char *value;   // holds the value
-    entry_t *next; // points to the next entry (possibly NULL)
-} entry_t;
 
+typedef struct entry entry_t;
 typedef struct hash_table ioopm_hash_table_t;
-typedef bool (*ioopm_apply_function)(int key, char *value, void *extra);
+typedef bool(*ioopm_apply_function)(int key, char *value, void *extra);
 
 /**
  * @file hash_table.h
