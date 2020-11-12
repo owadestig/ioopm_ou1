@@ -50,10 +50,11 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
     int bucket = key % 17;
 
     entry_t *entry = find_previous_entry_for_key(ht->buckets[bucket], ht->buckets[bucket], key);
+    entry_t *next = entry->next;
 
-    if (entry != NULL && entry->next->key == key)
+    if (entry != NULL && next->key == key)
     {
-        entry->next->value = value;
+        next->value = value;
     }
     else
     {
