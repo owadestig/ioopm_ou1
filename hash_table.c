@@ -280,6 +280,7 @@ char **ioopm_hash_table_values(ioopm_hash_table_t *h)
             fprintf(stdout, "%s ", entry->value);
             entry = entry->next;
         }
+        fprintf(stdout, "\n");
     }
     return NULL;
 }
