@@ -135,7 +135,7 @@ void *ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
             return prev_entry->value;
         }
 
-        fprintf(stdout, "Entry to lookup doesn't exist (empty bucket)");
+        fprintf(stdout, "Entry with key %d to lookup doesn't exist (empty bucket)\n", key);
         return NULL;
     }
 
@@ -170,7 +170,7 @@ char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
         }
         else
         {
-            fprintf(stdout, "Entry to remove doesn't exist");
+            fprintf(stdout, "Entry with key %d to remove doesn't exist\n", key);
             return NULL;
         }
     } // Om rätt key hittades som inte var front bucket
@@ -183,7 +183,7 @@ char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
     }
     else
     {
-        fprintf(stdout, "Entry to remove doesn't exist");
+        fprintf(stdout, "Entry with key %d to remove doesn't exist\n", key);
         return NULL;
     }
 
