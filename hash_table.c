@@ -39,14 +39,7 @@ ioopm_hash_table_t *ioopm_hash_table_create()
 /// param ht a hash table to be deleted
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
 {
-    for (int i = 0; i < No_Buckets; i++)
-    {
-        /*while (ht->buckets[i] != NULL)
-        {
-            ioopm_hash_table_remove(ht, ht->buckets[i]->key);
-        }*/
-        remove_bucket(ht,ht->buckets[i]);
-    }
+    ioopm_hash_table_clear(ht);
     free(ht);
 }
 
@@ -242,9 +235,12 @@ bool ioopm_hash_table_is_empty(ioopm_hash_table_t *h)
 /// @param h hash table operated upon
 void ioopm_hash_table_clear(ioopm_hash_table_t *h)
 {
-    for (int i = 0; i < 17; i++)
+    for (int i = 0; i < No_Buckets; i++)
     {
-        remove_bucket(h, h->buckets[i]);
+        while (h->buckets[i] != NULL)
+        {
+            ioopm_hash_table_remove(ht, ht->buckets[i]->key);
+        }
     }
 }
 
