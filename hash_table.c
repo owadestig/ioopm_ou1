@@ -49,26 +49,40 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
 {
     int bucket = key % 17;
 
-    entry_t *entry = find_previous_entry_for_key(ht->buckets[bucket], ht->buckets[bucket], key);
+    entry_t *entry = find_previous_entry_for_key(NULL, ht->buckets[bucket], key);
     entry_t *next = entry->next;
 
-    if (entry != NULL && next->key == key)
+    // Om vi hittade en entry med rätt key
+    if (next != NULL && next->key == key)
     {
         next->value = value;
+        return;
     }
-    else
+
+    // Om listan är tom eller entry är längst fram
+    if (entry == NULL)
     {
-        // IF FRONT THEN DON'T POINT TO ENTRY THAT DOESN'T EXIST, INSTEAD JUST CREATE ENTRY
-        if (entry == ht->buckets[bucket])
+        // Om listan är tom
+        if (ht->buckets[bucket] == NULL)
         {
-            entry_create(key, value, entry->next);
+            ht->buckets[bucket] = entry_create(key, value, NULL);
+            return;
         }
-        else
+        
+        // Om entry längst fram har samma key
+        if (ht->buckets[bucket]->key == key)
         {
-            entry->next = entry_create(key, value, entry->next);
+            ht->buckets[bucket]->value = value;
+            return;
         }
+
+        // Om entry längst fram har en större key än variabel key
+        ht->buckets[bucket] = entry_create(key, value, ht->buckets[bucket]);
     }
+
+    entry->next = entry_create(key, value, entry->next);
 }
+
 /// @brief checks if current entry has matching or a larger key then the input key,
 ///        iteratively searches the list for until criteria is met or end of list
 /// @param prev_entry previous entry to the one currently being investigated
@@ -91,7 +105,7 @@ entry_t *entry_create(int key, char *value, entry_t *next)
 
     if (new_entry == NULL)
     {
-        perror("entry_create: Couldnt calloc\n");
+        perror("entry_create: Couldn't calloc\n");
     }
 
     new_entry->key = key;
