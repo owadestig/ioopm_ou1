@@ -50,14 +50,6 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
     int bucket = key % 17;
 
     entry_t *entry = find_previous_entry_for_key(NULL, ht->buckets[bucket], key);
-    entry_t *next = entry->next;
-
-    // Om vi hittade en entry med rätt key
-    if (next != NULL && next->key == key)
-    {
-        next->value = value;
-        return;
-    }
 
     // Om listan är tom eller entry är längst fram
     if (entry == NULL)
@@ -68,7 +60,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
             ht->buckets[bucket] = entry_create(key, value, NULL);
             return;
         }
-        
+
         // Om entry längst fram har samma key
         if (ht->buckets[bucket]->key == key)
         {
@@ -78,6 +70,15 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
 
         // Om entry längst fram har en större key än variabel key
         ht->buckets[bucket] = entry_create(key, value, ht->buckets[bucket]);
+    }
+
+    entry_t *next = entry->next;
+
+    // Om vi hittade en entry med rätt key
+    if (entry->next != NULL && entry->next->key == key)
+    {
+        entry->next->value = value;
+        return;
     }
 
     entry->next = entry_create(key, value, entry->next);
