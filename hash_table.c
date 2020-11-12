@@ -232,12 +232,12 @@ bool ioopm_hash_table_is_empty(ioopm_hash_table_t *h)
 }
 
 /// @brief clear all the entries in a hash table
-/// @param h hash table operated upon
-void ioopm_hash_table_clear(ioopm_hash_table_t *h)
+/// @param ht hash table operated upon
+void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
 {
     for (int i = 0; i < No_Buckets; i++)
     {
-        while (h->buckets[i] != NULL)
+        while (ht->buckets[i] != NULL)
         {
             ioopm_hash_table_remove(ht, ht->buckets[i]->key);
         }
