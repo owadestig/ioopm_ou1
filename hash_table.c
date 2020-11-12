@@ -155,7 +155,7 @@ char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
 {
     int bucket = key % 17;
     entry_t *prev_entry = find_previous_entry_for_key(NULL, ht->buckets[bucket], key);
-    entry_t *entry;
+    char *val = NULL;
 
     // Om det prev_entry är NULL är bucket tom eller front bucket rätt
     if (prev_entry == NULL)
@@ -163,10 +163,10 @@ char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
         // Om bucket inte är tom och front bucket har rätt key
         if (ht->buckets[bucket] != NULL && ht->buckets[bucket]->key == key)
         {
-            entry = &ht->buckets[bucket];
-            // Om front bucket har en nästa???
-            ht->buckets[bucket] = ht->buckets[bucket]->next;
-            free(entry);
+            val = ht->buckets[bucket]->value;
+            entry_t *temp = ht->buckets[bucket]->next;
+            free(ht->buckets[bucket]);
+            ht->buckets[bucket] = temp;
         }
         else
         {
@@ -176,8 +176,9 @@ char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
     } // Om rätt key hittades som inte var front bucket
     else if (prev_entry->next != NULL && prev_entry->next->key == key)
     {
-        prev_entry->next = entry;
+        entry_t *entry = prev_entry->next;
         prev_entry->next = entry->next;
+        val = entry->value;
         free(entry);
     }
     else
@@ -186,12 +187,7 @@ char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
         return NULL;
     }
 
-    char *val = calloc(1, sizeof(entry->value));
-    val = strcpy(val, entry->value);
-
-    free(prev_entry);
-
-    return val; // WHAT?
+    return val;
 }
 
 /// @brief returns the number of key => value entries in the hash table
