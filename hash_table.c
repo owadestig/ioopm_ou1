@@ -72,8 +72,6 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
         ht->buckets[bucket] = entry_create(key, value, ht->buckets[bucket]);
     }
 
-    entry_t *next = entry->next;
-
     // Om vi hittade en entry med rätt key
     if (entry->next != NULL && entry->next->key == key)
     {
@@ -128,22 +126,25 @@ void *ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
 {
     int bucket = key % 17;
     entry_t *entry_front = ht->buckets[bucket];
-    entry_t *prev_entry = find_previous_entry_for_key(entry_front, entry_front, key);
+    entry_t *prev_entry = find_previous_entry_for_key(NULL, entry_front, key);
 
-    if (prev_entry->next == NULL)
+    if (prev_entry == NULL)
     {
+        if (entry_front->key == key)
+        {
+            return prev_entry->value;
+        }
+
+        fprintf(stdout, "Entry to lookup doesn't exist (empty bucket)");
         return NULL;
     }
 
-    if (prev_entry == entry_front && prev_entry->key == key)
-    {
-        return prev_entry->value;
-    }
-
-    if (prev_entry->next->key == key)
+    if (prev_entry->next != NULL && prev_entry->next->key == key)
     {
         return prev_entry->next->value;
     }
+
+    return NULL;
 }
 
 /// @brief remove any mapping from key to a value
@@ -152,19 +153,45 @@ void *ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
 /// @return the value mapped to by key (FIXME: incomplete)
 char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
 {
-    entry_t *entry = ioopm_hash_table_lookup(ht, key);
-    entry_t *prev_entry = find_previous_entry_for_key(entry, entry, key);
+    int bucket = key % 17;
+    entry_t *prev_entry = find_previous_entry_for_key(NULL, ht->buckets[bucket], key);
+    entry_t *entry;
 
-    if (entry != prev_entry)
+    // Om det prev_entry är NULL är bucket tom eller front bucket rätt
+    if (prev_entry == NULL)
     {
+        // Om bucket inte är tom och front bucket har rätt key
+        if (ht->buckets[bucket] != NULL && ht->buckets[bucket]->key == key)
+        {
+            entry = &ht->buckets[bucket];
+            // Om front bucket har en nästa???
+            ht->buckets[bucket] = ht->buckets[bucket]->next;
+            free(entry);
+        }
+        else
+        {
+            fprintf(stdout, "Entry to remove doesn't exist");
+            return NULL;
+        }
+    } // Om rätt key hittades som inte var front bucket
+    else if (prev_entry->next != NULL && prev_entry->next->key == key)
+    {
+        prev_entry->next = entry;
         prev_entry->next = entry->next;
+        free(entry);
+    }
+    else
+    {
+        fprintf(stdout, "Entry to remove doesn't exist");
+        return NULL;
     }
 
     char *val = calloc(1, sizeof(entry->value));
     val = strcpy(val, entry->value);
 
-    free(entry->value); // KANSKE ONÖDIGT
-    free(entry);
+    free(prev_entry);
+
+    return val; // WHAT?
 }
 
 /// @brief returns the number of key => value entries in the hash table
