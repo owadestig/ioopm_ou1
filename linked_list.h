@@ -6,7 +6,7 @@ typedef struct list ioopm_list_t; /// Meta: struct definition goes in C file
 /// FIXME: better comments here
 /// @brief Creates a new empty list
 /// @return an empty linked list
-ioopm_list_t *ioopm_linked_list_create()
+ioopm_list_t *ioopm_linked_list_create();
 
 /// @brief Tear down the linked list and return all its memory (but not the memory of the elements)
 /// @param list the list to be destroyed
