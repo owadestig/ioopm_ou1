@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "hash_table.h"
+#include <stdbool.h>
 
 #define No_Buckets 17
 
@@ -21,6 +22,7 @@ struct hash_table
 static entry_t *find_previous_entry_for_key(entry_t *prev_entry, entry_t *entry, int key);
 static entry_t *entry_create(int key, char *value, entry_t *next);
 static void remove_bucket(ioopm_hash_table_t *ht, entry_t *entry);
+static bool key_equiv(int key, char *value_ignored, void *x);
 
 /// @brief Create a new hash table
 /// @return A new empty hash table
@@ -340,20 +342,39 @@ void ioopm_hash_table_print_values(ioopm_hash_table_t *h)
 /// @brief check if a hash table has an entry with a given key
 /// @param h hash table operated upon
 /// @param key the key sought
-bool ioopm_hash_table_has_key(ioopm_hash_table_t *h, int key)
+bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, int key)
 {
-    if (ioopm_hash_table_lookup(h, key) != NULL)
-    {
-        return true;
-    }
-
-    return false;
+    return ioopm_hash_table_any(ht, key_equiv, &key);
 }
 
 /// @brief check if a hash table has an entry with a given value
 /// @param h hash table operated upon
 /// @param value the value sought
-bool ioopm_hash_table_has_value(ioopm_hash_table_t *h, char *value)
+bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, char *value)
+{
+    return ioopm_hash_table_any(ht, value_equiv, &value);
+}
+
+static bool key_equiv(int key, char *value_ignored, void *x)
+{
+    return key == *((int *)x);
+}
+
+static bool value_equiv(int key_ignored, char *value, void *x)
+{
+    char *other_value_ptr = x;
+    char *other_value = calloc(1, strlen(x)*sizeof(char));
+    strcpy(other_value,other_value_ptr);
+    bool ret = strcmp(value,other_value);
+    free(other_value);
+    return ret;
+}
+
+/// @brief check if a predicate is satisfied by all entries in a hash table
+/// @param h hash table operated upon
+/// @param pred the predicate
+/// @param arg extra argument to pred
+bool ioopm_hash_table_all(ioopm_hash_table_t *h, ioopm_predicate pred, void *arg)
 {
     for (int i = 0; i < 17; i++)
     {
@@ -361,7 +382,29 @@ bool ioopm_hash_table_has_value(ioopm_hash_table_t *h, char *value)
 
         while (entry != NULL)
         {
-            if (entry->value == value)
+            if (!pred(entry->key, entry->value, arg))
+            {
+                return false;
+            }
+            entry = entry->next;
+        }
+    }
+    return true;
+}
+
+/// @brief check if a predicate is satisfied by any entry in a hash table
+/// @param h hash table operated upon
+/// @param pred the predicate
+/// @param arg extra argument to pred
+bool ioopm_hash_table_any(ioopm_hash_table_t *h, ioopm_predicate pred, void *arg)
+{
+    for (int i = 0; i < 17; i++)
+    {
+        entry_t *entry = h->buckets[i];
+
+        while (entry != NULL)
+        {
+            if (pred(entry->key, entry->value, arg))
             {
                 return true;
             }
@@ -371,20 +414,11 @@ bool ioopm_hash_table_has_value(ioopm_hash_table_t *h, char *value)
     return false;
 }
 
-/// @brief check if a predicate is satisfied by all entries in a hash table
-/// @param h hash table operated upon
-/// @param pred the predicate
-/// @param arg extra argument to pred
-bool ioopm_hash_table_all(ioopm_hash_table_t *h, ioopm_apply_function pred, void *arg);
-
-/// @brief check if a predicate is satisfied by any entry in a hash table
-/// @param h hash table operated upon
-/// @param pred the predicate
-/// @param arg extra argument to pred
-bool ioopm_hash_table_any(ioopm_hash_table_t *h, ioopm_apply_function pred, void *arg);
-
 /// @brief apply a function to all entries in a hash table
 /// @param h hash table operated upon
 /// @param apply_fun the function to be applied to all elements
 /// @param arg extra argument to apply_fun
-void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *h, ioopm_apply_function apply_fun, void *arg);
+void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *h, ioopm_apply_function apply_fun, void *arg)
+{
+    apply_fun(0, ioopm_hash_table_values(h), arg);
+}
