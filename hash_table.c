@@ -15,6 +15,7 @@ struct entry
 struct hash_table
 {
     entry_t *buckets[17];
+    int size;
 };
 
 static entry_t *find_previous_entry_for_key(entry_t *prev_entry, entry_t *entry, int key);
@@ -31,6 +32,8 @@ ioopm_hash_table_t *ioopm_hash_table_create()
     {
         perror("ioopm_hash_table_create: Couldnt calloc\n");
     }
+
+    ht->size = 0;
 
     return ht;
 }
@@ -60,6 +63,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
         if (ht->buckets[bucket] == NULL)
         {
             ht->buckets[bucket] = entry_create(key, value, NULL);
+            ht->size++;
             return;
         }
 
@@ -72,6 +76,8 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
 
         // Om entry längst fram har en större key än variabel key
         ht->buckets[bucket] = entry_create(key, value, ht->buckets[bucket]);
+        ht->size++;
+        return;
     }
 
     // Om vi hittade en entry med rätt key
@@ -82,6 +88,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
     }
 
     entry->next = entry_create(key, value, entry->next);
+    ht->size++;
 }
 
 /// @brief checks if current entry has a matching or larger key then the input key,
@@ -101,8 +108,9 @@ static entry_t *find_previous_entry_for_key(entry_t *prev_entry, entry_t *entry,
 }
 
 /// @brief create a new entry
-/// @param ht hash table operated upon
-/// @param next pointer to the entry that is to go after the created one
+/// @param key key to create entry with
+/// @param value value to create entry with
+/// @param next next entry after the newly created one
 /// @return a pointer to a allocated new entry
 static entry_t *entry_create(int key, char *value, entry_t *next)
 {
@@ -194,6 +202,7 @@ char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
         return NULL;
     }
 
+    ht->size--;
     return val;
 }
 
@@ -202,20 +211,7 @@ char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
 /// @return the number of key => value entries in the hash table
 int ioopm_hash_table_size(ioopm_hash_table_t *h)
 {
-    int amount = 0;
-
-    for (int i = 0; i < No_Buckets; i++)
-    {
-        entry_t *current_entry = h->buckets[i];
-
-        while (current_entry != NULL)
-        {
-            amount++;
-            current_entry = current_entry->next;
-        }
-    }
-
-    return amount;
+    return h->size;
 }
 
 /// @brief checks if the hash table is empty
@@ -258,7 +254,54 @@ static void remove_bucket(ioopm_hash_table_t *ht, entry_t *entry)
 /// @brief return the keys for all entries in a hash map (in no particular order, but same as ioopm_hash_table_values)
 /// @param h hash table operated upon
 /// @return an array of keys for hash table h
-int *ioopm_hash_table_keys(ioopm_hash_table_t *h)
+int *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
+{
+    int amount = ioopm_hash_table_size;
+    int i = 0;
+    char *keys = calloc(1, amount * sizeof(int));
+
+    for (int j = 0; j < No_Buckets; j++)
+    {
+        entry_t *entry = ht->buckets[j];
+
+        while (entry != NULL)
+        {
+            keys[i] = entry->value;
+            entry = entry->next;
+            i++;
+        }
+    }
+    return keys;
+}
+
+/// @brief return the values for all entries in a hash map (in no particular order, but same as ioopm_hash_table_keys)
+/// @param h hash table operated upon
+/// @return an array of values for hash table h
+char **ioopm_hash_table_values(ioopm_hash_table_t *ht)
+{
+    int amount = ioopm_hash_table_size;
+    int i = 0;
+    char **values = calloc(1, amount * sizeof(char *));
+
+    for (int j = 0; j < No_Buckets; j++)
+    {
+        entry_t *entry = ht->buckets[j];
+
+        while (entry != NULL)
+        {
+            char *temp = calloc(1, sizeof(entry->value));
+            strcpy(temp, entry->value);
+            values[i] = temp;
+            entry = entry->next;
+            i++;
+        }
+    }
+    return values;
+}
+
+/// @brief prints all keys in hash table
+/// @param h hash table operated upon
+void ioopm_hash_table_print_keys(ioopm_hash_table_t *h)
 {
     for (int i = 0; i < No_Buckets; i++)
     {
@@ -275,10 +318,9 @@ int *ioopm_hash_table_keys(ioopm_hash_table_t *h)
     return NULL;
 }
 
-/// @brief return the values for all entries in a hash map (in no particular order, but same as ioopm_hash_table_keys)
+/// @brief prints all keys in hash table
 /// @param h hash table operated upon
-/// @return an array of values for hash table h
-char **ioopm_hash_table_values(ioopm_hash_table_t *h)
+void ioopm_hash_table_print_values(ioopm_hash_table_t *h)
 {
     for (int i = 0; i < No_Buckets; i++)
     {
