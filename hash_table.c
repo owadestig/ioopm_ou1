@@ -369,7 +369,8 @@ static bool value_equiv(int key_ignored, char *value, void *x)
     free(other_value);
     return ret;
     */
-    return strcmp(value, ((char *)x));
+    bool temp = strcmp(value, ((char *)x));
+    return temp;
 }
 
 /// @brief check if a predicate is satisfied by all entries in a hash table
