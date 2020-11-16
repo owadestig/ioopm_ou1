@@ -5,8 +5,8 @@
 
 typedef struct entry entry_t;
 typedef struct hash_table ioopm_hash_table_t;
-typedef bool(*ioopm_apply_function)(int key, char *value, void *extra);
-
+typedef bool(*ioopm_predicate)(int key, char *value, void *extra);
+typedef void(*ioopm_apply_function)(int key, char **value, void *extra);
 /**
  * @file hash_table.h
  * @author Oscar Wadestig
@@ -84,13 +84,13 @@ bool ioopm_hash_table_has_value(ioopm_hash_table_t *h, char *value);
 /// @param h hash table operated upon
 /// @param pred the predicate
 /// @param arg extra argument to pred
-bool ioopm_hash_table_all(ioopm_hash_table_t *h, ioopm_apply_function pred, void *arg);
+bool ioopm_hash_table_all(ioopm_hash_table_t *h, ioopm_predicate pred, void *arg);
 
 /// @brief check if a predicate is satisfied by any entry in a hash table
 /// @param h hash table operated upon
 /// @param pred the predicate
 /// @param arg extra argument to pred
-bool ioopm_hash_table_any(ioopm_hash_table_t *h, ioopm_apply_function pred, void *arg);
+bool ioopm_hash_table_any(ioopm_hash_table_t *h, ioopm_predicate pred, void *arg);
 
 /// @brief apply a function to all entries in a hash table
 /// @param h hash table operated upon

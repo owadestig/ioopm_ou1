@@ -23,6 +23,7 @@ static entry_t *find_previous_entry_for_key(entry_t *prev_entry, entry_t *entry,
 static entry_t *entry_create(int key, char *value, entry_t *next);
 static void remove_bucket(ioopm_hash_table_t *ht, entry_t *entry);
 static bool key_equiv(int key, char *value_ignored, void *x);
+static bool key_equiv(int key, char *value_ignored, void *x);
 
 /// @brief Create a new hash table
 /// @return A new empty hash table
@@ -258,7 +259,7 @@ static void remove_bucket(ioopm_hash_table_t *ht, entry_t *entry)
 /// @return an array of keys for hash table h
 int *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
 {
-    int amount = ioopm_hash_table_size;
+    int amount = ioopm_hash_table_size(ht);
     int i = 0;
     char *keys = calloc(1, amount * sizeof(int));
 
@@ -268,7 +269,7 @@ int *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
 
         while (entry != NULL)
         {
-            keys[i] = entry->value;
+            keys[i] = entry->key;
             entry = entry->next;
             i++;
         }
@@ -281,7 +282,7 @@ int *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
 /// @return an array of values for hash table h
 char **ioopm_hash_table_values(ioopm_hash_table_t *ht)
 {
-    int amount = ioopm_hash_table_size;
+    int amount = ioopm_hash_table_size(ht);
     int i = 0;
     char **values = calloc(1, amount * sizeof(char *));
 
@@ -317,7 +318,6 @@ void ioopm_hash_table_print_keys(ioopm_hash_table_t *h)
         }
         fprintf(stdout, "\n");
     }
-    return NULL;
 }
 
 /// @brief prints all keys in hash table
@@ -336,7 +336,6 @@ void ioopm_hash_table_print_values(ioopm_hash_table_t *h)
         }
         fprintf(stdout, "\n");
     }
-    return NULL;
 }
 
 /// @brief check if a hash table has an entry with a given key
