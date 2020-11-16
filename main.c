@@ -32,10 +32,10 @@ int main(int argc, char const *argv[])
 
     for (int i = 0; i < size; i++)
     {
-        free(values[i]);
+        //free(values[i]);
     }   
 
-    free(values);
+    //free(values);
     free(keys);
 
     return 0;
