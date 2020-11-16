@@ -10,12 +10,28 @@ int main(int argc, char const *argv[])
     ioopm_hash_table_insert(ht, 1, "a");
     ioopm_hash_table_insert(ht, 4, "d");
     ioopm_hash_table_insert(ht, 2, "b");
-    ioopm_hash_table_keys(ht);
-    ioopm_hash_table_values(ht);
+    int *keys = ioopm_hash_table_keys(ht);
+    char **values = ioopm_hash_table_values(ht);
+    int size = ioopm_hash_table_size(ht);
     ioopm_hash_table_remove(ht, 6);
     ioopm_hash_table_remove(ht, 5);
     ioopm_hash_table_values(ht);
     ioopm_hash_table_destroy(ht);
+
+    fprintf(stdout, "Keys = ");
+    for (int i = 0; i < size; i++)
+    {
+        fprintf(stdout, "%d ", keys[i]);
+    }
+
+    fprintf(stdout, "Values = ");
+    for (int i = 0; i < size; i++)
+    {
+        fprintf(stdout, "%s ", values[i]);
+    }
+
+    free(values);
+    free(keys);
 
     return 0;
 }
