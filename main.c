@@ -36,7 +36,7 @@ int main(int argc, char const *argv[])
     }
     
 
-    free(values);
+    //free(values);
     free(keys);
 
     return 0;

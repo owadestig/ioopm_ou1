@@ -284,7 +284,8 @@ char **ioopm_hash_table_values(ioopm_hash_table_t *ht)
 {
     int amount = ioopm_hash_table_size(ht);
     int i = 0;
-    char **values = calloc(1, amount * sizeof(char *));
+    //char **values = calloc(1, amount * sizeof(char *));
+    char *values[amount];
 
     for (int j = 0; j < No_Buckets; j++)
     {
