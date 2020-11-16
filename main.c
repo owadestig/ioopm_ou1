@@ -30,6 +30,12 @@ int main(int argc, char const *argv[])
         fprintf(stdout, "%s ", values[i]);
     }
 
+    for (int i = 0; i < size; i++)
+    {
+        free(values[i]);
+    }
+    
+
     free(values);
     free(keys);
 
