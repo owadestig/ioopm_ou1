@@ -361,7 +361,15 @@ static bool key_equiv(int key, char *value_ignored, void *x)
 
 static bool value_equiv(int key_ignored, char *value, void *x)
 {
+    /*
     char *other_value_ptr = x;
+    char *other_value = calloc(1, strlen(other_value_ptr) * sizeof(char));
+    strcpy(other_value, other_value_ptr);
+    bool ret = strcmp(value, other_value);
+    free(other_value);
+    return ret;
+    */
+    char *other_value_ptr = (char *)x;
     char *other_value = calloc(1, strlen(other_value_ptr) * sizeof(char));
     strcpy(other_value, other_value_ptr);
     bool ret = strcmp(value, other_value);
