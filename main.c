@@ -15,7 +15,6 @@ int main(int argc, char const *argv[])
     int size = ioopm_hash_table_size(ht);
     ioopm_hash_table_remove(ht, 6);
     ioopm_hash_table_remove(ht, 5);
-    ioopm_hash_table_values(ht);
     ioopm_hash_table_destroy(ht);
     /*
     fprintf(stdout, "Keys = ");
