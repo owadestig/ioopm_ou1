@@ -351,7 +351,7 @@ bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, int key)
 /// @param value the value sought
 bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, char *value)
 {
-    return ioopm_hash_table_any(ht, value_equiv, value);
+    return ioopm_hash_table_any(ht, value_equiv, &value);
 }
 
 static bool key_equiv(int key, char *value_ignored, void *x)
@@ -369,7 +369,7 @@ static bool value_equiv(int key_ignored, char *value, void *x)
     free(other_value);
     return ret;
     */
-    char *other_value_ptr = (char *)x;
+    char *other_value_ptr = *(char *)x;
     char *other_value = calloc(1, strlen(other_value_ptr) * sizeof(char));
     strcpy(other_value, other_value_ptr);
     bool ret = strcmp(value, other_value);
