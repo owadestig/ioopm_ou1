@@ -5,16 +5,16 @@
 int main(int argc, char const *argv[])
 {
     ioopm_hash_table_t *ht = ioopm_hash_table_create();
-    ioopm_hash_table_insert(ht, 5, "e");
-    ioopm_hash_table_insert(ht, 3, "c");
-    ioopm_hash_table_insert(ht, 1, "a");
-    ioopm_hash_table_insert(ht, 4, "d");
-    ioopm_hash_table_insert(ht, 2, "b");
+    ioopm_hash_table_insert(ht, 5, "e1");
+    ioopm_hash_table_insert(ht, 3, "c1");
+    ioopm_hash_table_insert(ht, 1, "a1");
+    ioopm_hash_table_insert(ht, 4, "d1");
+    ioopm_hash_table_insert(ht, 2, "b1");
     int *keys = ioopm_hash_table_keys(ht);
     char **values = ioopm_hash_table_values(ht);
     int size = ioopm_hash_table_size(ht);
-    bool temp1 = ioopm_hash_table_has_value(ht, "a");
-    bool temp2 = ioopm_hash_table_has_value(ht, "g");
+    bool temp1 = ioopm_hash_table_has_value(ht, "a1");
+    bool temp2 = ioopm_hash_table_has_value(ht, "g1");
     bool temp3 = ioopm_hash_table_has_key(ht, 5);
     bool temp4 = ioopm_hash_table_has_key(ht, 10);
     ioopm_hash_table_remove(ht, 6);
