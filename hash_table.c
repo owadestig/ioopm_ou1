@@ -369,7 +369,8 @@ static bool value_equiv(int key_ignored, char *value, void *x)
     free(other_value);
     return ret;
     */
-    bool temp = strcmp(value, x);
+    char *hej = (char*)x;
+    bool temp = strcmp(value, hej);
     return temp;
 }
 
