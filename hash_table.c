@@ -23,7 +23,7 @@ static entry_t *find_previous_entry_for_key(entry_t *prev_entry, entry_t *entry,
 static entry_t *entry_create(int key, char *value, entry_t *next);
 static void remove_bucket(ioopm_hash_table_t *ht, entry_t *entry);
 static bool key_equiv(int key, char *value_ignored, void *x);
-static bool key_equiv(int key, char *value_ignored, void *x);
+static bool value_equiv(int key_ignored, char *value, void *x);
 
 /// @brief Create a new hash table
 /// @return A new empty hash table
@@ -261,7 +261,7 @@ int *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
 {
     int amount = ioopm_hash_table_size(ht);
     int i = 0;
-    char *keys = calloc(1, amount * sizeof(int));
+    int *keys = calloc(1, amount * sizeof(int));
 
     for (int j = 0; j < No_Buckets; j++)
     {
