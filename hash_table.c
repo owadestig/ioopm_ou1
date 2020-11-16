@@ -282,9 +282,11 @@ int *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
 /// @return an array of values for hash table h
 char **ioopm_hash_table_values(ioopm_hash_table_t *ht)
 {
+    int allocs = 0;
     int amount = ioopm_hash_table_size(ht);
     int i = 0;
     char **values = calloc(1, amount * sizeof(char *));
+    allocs++;
 
     for (int j = 0; j < No_Buckets; j++)
     {
@@ -293,12 +295,15 @@ char **ioopm_hash_table_values(ioopm_hash_table_t *ht)
         while (entry != NULL)
         {
             char *temp = calloc(1, sizeof(entry->value));
+            allocs++;
             strcpy(temp, entry->value);
             values[i] = temp;
             entry = entry->next;
             i++;
         }
     }
+
+    printf("allocs = %d\n", allocs);
 
     return values;
 }
