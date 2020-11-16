@@ -284,7 +284,7 @@ char **ioopm_hash_table_values(ioopm_hash_table_t *ht)
 {
     int amount = ioopm_hash_table_size(ht);
     int i = 0;
-    char *values[amount] = calloc(1, amount * sizeof(char *));
+    char **values = calloc(1, amount * sizeof(char *));
 
     for (int j = 0; j < No_Buckets; j++)
     {
@@ -299,6 +299,12 @@ char **ioopm_hash_table_values(ioopm_hash_table_t *ht)
             i++;
         }
     }
+
+    for (int i = 0; i < amount; i++)
+    {
+        fprintf(stdout, "Value %d = %s\n", amount, values[i]);
+    }
+
     return values;
 }
 
@@ -362,9 +368,9 @@ static bool key_equiv(int key, char *value_ignored, void *x)
 static bool value_equiv(int key_ignored, char *value, void *x)
 {
     char *other_value_ptr = x;
-    char *other_value = calloc(1, strlen(x)*sizeof(char));
-    strcpy(other_value,other_value_ptr);
-    bool ret = strcmp(value,other_value);
+    char *other_value = calloc(1, strlen(x) * sizeof(char));
+    strcpy(other_value, other_value_ptr);
+    bool ret = strcmp(value, other_value);
     free(other_value);
     return ret;
 }
