@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h> 
+#include <stdbool.h>
 
 typedef bool(*ioopm_char_predicate)(int key, char *value, void *extra);
 typedef void(*ioopm_apply_char_function)(int key, char **value, void *extra);
+typedef union elem elem_t;
+typedef struct cell cell_t;
+typedef struct list ioopm_list_t;
 
-typedef struct list ioopm_list_t; /// Meta: struct definition goes in C file
 /// FIXME: better comments here
 /// @brief Creates a new empty list
 /// @return an empty linked list

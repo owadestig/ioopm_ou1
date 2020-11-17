@@ -1,23 +1,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "hash_table.h"
 #include "linked_list.h"
 
 struct list
 {
-    entry_t *first;
-    entry_t *last;
+    cell_t *first;
+    cell_t *last;
     int length;
 };
 
-struct entry
+struct cell
 {
     int key;
     void *value;
-    entry_t *prev;
-    entry_t *next;
+    cell_t *prev;
+    cell_t *next;
 };
+
+union elem
+{ 
+  int i;
+  unsigned int u;
+  bool b;
+  float f;
+  void *p;
+  /// BYT UT VOID VALUE I CELL TILL EN ELEM
+};
+
 
 /// @brief Creates a new empty list
 /// @return an empty linked list
@@ -26,8 +36,8 @@ ioopm_list_t *ioopm_linked_list_create()
     // Allocate memory for the list head.
     ioopm_list_t *l = calloc(1, sizeof(ioopm_list_t));
 
-    l->last = calloc(1, sizeof(entry_t));
-    l->first = calloc(1, sizeof(entry_t));
+    l->last = calloc(1, sizeof(cell_t));
+    l->first = calloc(1, sizeof(cell_t));
 
     l->first->next = l->last;
     l->last->prev = l->first->next;
@@ -45,7 +55,7 @@ void ioopm_linked_list_destroy(ioopm_list_t *list);
 /// @param value the value to be appended
 void ioopm_linked_list_append(ioopm_list_t *list, int value)
 {
-    entry_t *new = calloc(1, sizeof(entry_t));
+    cell_t *new = calloc(1, sizeof(cell_t));
     new->value = value;
     list->first->next->prev = new;
     new->next = list->first->next;
@@ -59,7 +69,7 @@ void ioopm_linked_list_append(ioopm_list_t *list, int value)
 /// @param value the value to be appended
 void ioopm_linked_list_prepend(ioopm_list_t *list, int value)
 {
-    entry_t *new = calloc(1, sizeof(entry_t));
+    cell_t *new = calloc(1, sizeof(cell_t));
     new->value = value;
     list->last->prev->next = new;
     new->prev = list->last->prev;
@@ -77,11 +87,11 @@ void ioopm_linked_list_prepend(ioopm_list_t *list, int value)
 /// @param value the value to be appended
 void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value)
 {
-    entry_t *next = ioopm_linked_list_get(list, index);
+    cell_t *next = ioopm_linked_list_get(list, index);
 
-    entry_t *prev = next->prev;
+    cell_t *prev = next->prev;
 
-    entry_t *new = calloc(1, sizeof(entry_t));
+    cell_t *new = calloc(1, sizeof(cell_t));
     prev->next = new;
     new->prev = prev;
     new->next = next;
@@ -98,7 +108,7 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value)
 /// @return the value returned (*)
 int ioopm_linked_list_remove(ioopm_list_t *list, int index)
 {
-    entry_t *entry = ioopm_linked_list_get(list, index + 1);
+    cell_t *entry = ioopm_linked_list_get(list, index + 1);
 
     entry->prev->next = entry->next;
     entry->next->prev = entry->prev;
@@ -114,10 +124,16 @@ int ioopm_linked_list_remove(ioopm_list_t *list, int index)
 /// @return the value at the given position
 int ioopm_linked_list_get(ioopm_list_t *list, int index)
 {
-    entry_t *entry = linked_list_lookup(list, index);
+    cell_t *entry = linked_list_lookup(list, index);
     return entry->value;
 }
 
+/// @brief Retrieve an element from a linked list in O(n) time.
+/// The valid values of index are [0,n-1] for a list of n elements,
+/// where 0 means the first element and n-1 means the last element.
+/// @param list the linked list that will be extended
+/// @param index the position in the list
+/// @return the entry at the given position
 static void *linked_list_lookup(ioopm_list_t *list, int index)
 {
     if (index > list->length)
@@ -126,7 +142,7 @@ static void *linked_list_lookup(ioopm_list_t *list, int index)
         return NULL;
     }
 
-    entry_t *entry = list->first;
+    cell_t *entry = list->first;
 
     int i = 0;
 
@@ -144,7 +160,7 @@ static void *linked_list_lookup(ioopm_list_t *list, int index)
 /// @return true if element is in the list, else false
 bool ioopm_linked_list_contains(ioopm_list_t *list, int element)
 {
-    entry_t *entry = list->first->next;
+    cell_t *entry = list->first->next;
 
     for (int i = 0; i < list->length; i++)
     {
@@ -175,7 +191,7 @@ bool ioopm_linked_list_is_empty(ioopm_list_t *list)
 }
 /// @brief Remove all elements from a linked list
 /// @param list the linked list
-void ioopm_linked_list_clear(ioopm_list_t *list);
+void ioopm_linked_list_clear(ioopm_list_t *list)
 {
     while (list->first->next != list->last)
     {
@@ -191,7 +207,7 @@ void ioopm_linked_list_clear(ioopm_list_t *list);
 /// @return true if prop holds for all elements in the list, else false
 bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_char_predicate prop, void *extra)
 {
-    entry_t *entry = list->first;
+    cell_t *entry = list->first;
 
     while (entry != NULL)
     {
@@ -212,7 +228,7 @@ bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_char_predicate prop, void *
 /// @return true if prop holds for any elements in the list, else false
 bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_char_predicate prop, void *extra)
 {
-    entry_t *entry = list->first;
+    cell_t *entry = list->first;
 
     while (entry != NULL)
     {
