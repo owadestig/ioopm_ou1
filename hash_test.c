@@ -5,15 +5,15 @@
 #include <stdbool.h>
 //#include <CUnit/Basic.h>
 
-ioopm_hash_table_t *ioopm_hash_table_create_test()
+//Klar
+void test_create()
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create();
-  if (/* condition */)
-  {
-    /* code */
-  }
+  CU_ASSERT_PTR_NOT_NULL(ht);
+  ioopm_hash_table_destroy(ht);
 }
 
+//klar
 void test_create_destroy()
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create();
@@ -27,6 +27,7 @@ void test_insert()
   ioopm_hash_table_destroy(ht);
 }
 
+//klar
 void test_lookup1()
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create();
@@ -38,6 +39,7 @@ void test_lookup1()
   ioopm_hash_table_destroy(ht);
 }
 
+//klar
 void test_lookup2()
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create();
@@ -49,6 +51,7 @@ void test_lookup2()
   ioopm_hash_table_destroy(ht);
 }
 
+//klar
 void test_remove1()
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create();
@@ -62,6 +65,7 @@ void test_remove1()
   ioopm_hash_table_destroy(ht);
 }
 
+//klar
 void test_remove2()
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create();
