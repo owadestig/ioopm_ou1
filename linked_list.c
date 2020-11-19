@@ -19,15 +19,14 @@ struct cell
 };
 
 union elem
-{ 
-  int i;
-  unsigned int u;
-  bool b;
-  float f;
-  void *p;
-  /// BYT UT VOID VALUE I CELL TILL EN ELEM
+{
+    int i;
+    unsigned int u;
+    bool b;
+    float f;
+    void *p;
+    /// BYT UT VOID VALUE I CELL TILL EN ELEM
 };
-
 
 /// @brief Creates a new empty list
 /// @return an empty linked list
@@ -110,6 +109,11 @@ int ioopm_linked_list_remove(ioopm_list_t *list, int index)
 {
     cell_t *entry = ioopm_linked_list_get(list, index + 1);
 
+    if (entry == NULL)
+    {
+        return NULL;
+    }
+
     entry->prev->next = entry->next;
     entry->next->prev = entry->prev;
     free(entry);
@@ -124,6 +128,12 @@ int ioopm_linked_list_remove(ioopm_list_t *list, int index)
 /// @return the value at the given position
 int ioopm_linked_list_get(ioopm_list_t *list, int index)
 {
+    if (index > list->length)
+    {
+        fprintf(stderr, "index %d exceeds list length %d", index, list->length);
+        return NULL;
+    }
+
     cell_t *entry = linked_list_lookup(list, index);
     return entry->value;
 }
@@ -136,12 +146,6 @@ int ioopm_linked_list_get(ioopm_list_t *list, int index)
 /// @return the entry at the given position
 static void *linked_list_lookup(ioopm_list_t *list, int index)
 {
-    if (index > list->length)
-    {
-        fprintf(stderr, "index %d exceeds list length %d", index, list->length);
-        return NULL;
-    }
-
     cell_t *entry = list->first;
 
     int i = 0;
@@ -247,5 +251,5 @@ bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_char_predicate prop, void *
 /// @param extra an additional argument (may be NULL) that will be passed to all internal calls of fun
 void ioopm_linked_apply_to_all(ioopm_list_t *list, ioopm_apply_char_function fun, void *extra)
 {
-    fun(0, list_ (list), extra);
+    fun(0, list_(list), extra);
 }
