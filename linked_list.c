@@ -128,7 +128,7 @@ int ioopm_linked_list_remove(ioopm_list_t *list, int index)
 /// @return the value at the given position
 int ioopm_linked_list_get(ioopm_list_t *list, int index)
 {
-    if (index > list->length)
+    if (index > list->length && index < 0)
     {
         fprintf(stderr, "index %d exceeds list length %d", index, list->length);
         return NULL;
