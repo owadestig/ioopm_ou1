@@ -10,8 +10,8 @@
 void CU_ASSERT(bool as);
 void CU_ASSERT_TRUE(bool as);
 void CU_ASSERT_FALSE(bool as);
-void CU_ASSERT_PTR_NULL(bool as);
-void CU_ASSERT_PTR_NOT_NULL(bool as);
+void CU_ASSERT_PTR_NULL(void *as);
+void CU_ASSERT_PTR_NOT_NULL(void *as);
 void ghettostyle();
 
 void test_create()
@@ -229,7 +229,7 @@ void CU_ASSERT_TRUE(bool as)
     fprintf(stdout, "CU_ASSERT_TRUE: FAIL\n");
 }
 
-void CU_ASSERT_PTR_NOT_NULL(bool as)
+void CU_ASSERT_PTR_NOT_NULL(void *as)
 {
     if (as != NULL)
     {
@@ -240,7 +240,7 @@ void CU_ASSERT_PTR_NOT_NULL(bool as)
     fprintf(stdout, "CU_ASSERT_PTR_NOT_NULL: FAIL\n");
 }
 
-void CU_ASSERT_PTR_NULL(bool as)
+void CU_ASSERT_PTR_NULL(void *as)
 {
     if (as == NULL)
     {
