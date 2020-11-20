@@ -3,7 +3,15 @@
 #include "hash_table.h"
 #include <string.h>
 #include <stdbool.h>
-//#include <CUnit/Basic.h>
+
+void ghettostyle();
+//#include <CUnit/Basic.h
+void CU_ASSERT(bool as);
+void CU_ASSERT_TRUE(bool as);
+void CU_ASSERT_FALSE(bool as);
+void CU_ASSERT_PTR_NULL(bool as);
+void CU_ASSERT_PTR_NOT_NULL(bool as);
+
 
 //Klar
 void test_create()
@@ -107,7 +115,7 @@ void test_size()
 }
 
 //KLAR
-void test_empty()
+void test_is_empty()
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create();
   CU_ASSERT_TRUE(ioopm_hash_table_is_empty(ht));
@@ -190,6 +198,9 @@ void test2(void)
 
 int main()
 {
+  ghettostyle();
+
+  /*
   CU_pSuite test_suite1 = NULL;
 
   if (CUE_SUCCESS != CU_initialize_registry())
@@ -214,4 +225,74 @@ int main()
   CU_basic_run_tests();
   CU_cleanup_registry();
   return CU_get_error();
+  */
+}
+
+void ghettostyle()
+{
+  test_create();
+  test_destroy();
+  test_insert();
+  test_lookup1();
+  test_lookup2();
+  test_remove1();
+  test_remove2();
+  test_size();
+  test_is_empty();
+  test_clear();
+}
+
+void CU_ASSERT(bool as)
+{
+  if (as)
+  {
+    fprintf(stdout, "CU_ASSERT_TRUE: Success\n");
+    return;
+  }
+
+  fprintf(stdout, "CU_ASSERT_TRUE: FAIL\n");
+}
+
+void CU_ASSERT_FALSE(bool as)
+{
+  if (!as)
+  {
+    fprintf(stdout, "CU_ASSERT_FALSE: Success\n");
+    return;
+  }
+
+  fprintf(stdout, "CU_ASSERT_FALSE: FAIL\n");
+}
+
+void CU_ASSERT_TRUE(bool as)
+{
+  if (as)
+  {
+    fprintf(stdout, "CU_ASSERT_TRUE: Success\n");
+    return;
+  }
+
+  fprintf(stdout, "CU_ASSERT_TRUE: FAIL\n");
+}
+
+void CU_ASSERT_PTR_NOT_NULL(bool as)
+{
+  if (as != NULL)
+  {
+    fprintf(stdout, "CU_ASSERT_PTR_NOT_NULL: Success\n");
+    return;
+  }
+
+  fprintf(stdout, "CU_ASSERT_PTR_NOT_NULL: FAIL\n");
+}
+
+void CU_ASSERT_PTR_NULL(bool as)
+{
+  if (as == NULL)
+  {
+    fprintf(stdout, "CU_ASSERT_PTR_NULL: Success\n");
+    return;
+  }
+
+  fprintf(stdout, "CU_ASSERT_PTR_NULL: FAIL\n");
 }
